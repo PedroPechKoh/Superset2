@@ -2,17 +2,23 @@ FROM apache/superset:latest
 
 USER root
 
-# Instalar dependencias del sistema para mysqlclient
+# 1. Instalar librerías del sistema necesarias
 RUN apt-get update && apt-get install -y \
-    pkg-config \
-    default-libmysqlclient-dev \
     build-essential \
-    && rm -rf /var/lib/apt/lists/*
+    libssl-dev \
+    libffi-dev \
+    python3-dev \
+    libsasl2-dev \
+    libldap2-dev \
+    default-libmysqlclient-dev \
+    && apt-get clean
 
-# Copiar config y requirements
+# 2. Copiar los archivos de configuración
 COPY requirements.txt .
-RUN pip install -r requirements.txt
-
 COPY superset_config.py /app/pythonpath/superset_config.py
+
+# 3. TRUCO DE MAGIA: Instalar DIRECTAMENTE en el entorno virtual de Superset
+# Usamos '/app/.venv/bin/pip' para asegurar que las librerías queden donde el servidor las busca
+RUN /app/.venv/bin/pip install --no-cache-dir -r requirements.txt
 
 USER superset
