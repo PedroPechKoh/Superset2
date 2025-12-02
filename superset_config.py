@@ -1,27 +1,32 @@
 import os
 
-# Clave secreta (Llenaremos esto en las variables de Railway)
+# --- SEGURIDAD ---
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-# Permitir que Superset se ejecute detrás del proxy de Railway
+# --- BASE DE DATOS METADATA (Postgres de Railway) ---
+SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+
+# --- CACHÉ CON REDIS (Para evitar errores de memoria) ---
+CACHE_CONFIG = {
+    "CACHE_TYPE": "RedisCache",
+    "CACHE_DEFAULT_TIMEOUT": 300,
+    "CACHE_KEY_PREFIX": "superset_",
+    "CACHE_REDIS_URL": os.getenv("REDIS_URL")
+}
+
+# --- PERMISOS PARA EMBEBER (SoulArt) ---
 ENABLE_PROXY_FIX = True
+TALISMAN_ENABLED = False
+WTF_CSRF_ENABLED = False 
 
-# Desactivar protección estricta contra iFrames para permitir incrustar
-TALISMAN_ENABLED = False 
-
-# Habilitar CORS para tu dominio de Railway y Frontend
 ENABLE_CORS = True
 CORS_OPTIONS = {
     "supports_credentials": True,
     "allow_headers": ["*"],
     "resources": ["*"],
-    "origins": ["*"] # O pon aquí tu dominio: ["https://soulart-production.up.railway.app"]
+    "origins": ["*"] 
 }
 
-# Feature Flags: ¡IMPORTANTE para Dashboards embebidos!
 FEATURE_FLAGS = {
     "EMBEDDED_SUPERSET": True
 }
-
-# Configuración de Base de Datos (Railway usa Postgres para la metadata de Superset)
-SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
