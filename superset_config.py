@@ -77,7 +77,7 @@ SESSION_COOKIE_HTTPONLY = True
 
 
 # --- ROL DE INVITADO ---
-
+GUEST_TOKEN_JWT_AUDIENCE = "https://superset2-production.up.railway.app/"
 # Esto asegura que el invitado use el rol 'Public' como base
 
 GUEST_ROLE_NAME = "Public"
@@ -87,3 +87,4 @@ FEATURE_FLAGS = {
     "EMBEDDED_SUPERSET": True
 
 }
+
